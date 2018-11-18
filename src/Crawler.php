@@ -17,6 +17,7 @@ use Spatie\Crawler\Handlers\CrawlRequestFailed;
 use Spatie\Crawler\Handlers\CrawlRequestFulfilled;
 use Spatie\Crawler\CrawlQueue\CollectionCrawlQueue;
 use Spatie\Crawler\Exception\InvalidCrawlRequestHandler;
+use Log;
 
 class Crawler
 {
@@ -498,10 +499,16 @@ class Crawler
     public function addToCrawlQueue(CrawlUrl $crawlUrl): Crawler
     {
         if (! $this->getCrawlProfile()->shouldCrawl($crawlUrl->url)) {
+            Log::info('SHOULD NOT CRAWL:');
+            Log::info($crawlUrl->url);
+            Log::info('----');
             return $this;
         }
 
         if ($this->getCrawlQueue()->has($crawlUrl->url)) {
+            Log::info('ALREADY EXISTS:');
+            Log::info($crawlUrl->url);
+            Log::info('----');
             return $this;
         }
 
