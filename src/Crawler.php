@@ -138,7 +138,7 @@ class Crawler
         return $this->maximumResponseSize;
     }
 
-    public function setMaximumCrawlCount(int $maximumCrawlCount): Crawler
+    public function setMaximumCrawlCount(int $maximumCrawlCount = null): Crawler
     {
         $this->maximumCrawlCount = $maximumCrawlCount;
 
