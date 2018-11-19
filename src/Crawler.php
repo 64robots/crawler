@@ -447,7 +447,7 @@ class Crawler
         $password = $this->proxyConfig['password'];
         $port = $this->proxyConfig['port'];
 
-        $proxy = Proxy::oldestUsed()->first();
+        $proxy = Proxy::active()->oldestUsed()->first();
         $proxyIp = $proxy ? $proxy->ip_address : $ips->random();
 
         // set the proxy on the observer so we can track success / failures
