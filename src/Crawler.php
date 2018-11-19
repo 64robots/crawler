@@ -17,6 +17,7 @@ use Spatie\Crawler\Handlers\CrawlRequestFailed;
 use Spatie\Crawler\Handlers\CrawlRequestFulfilled;
 use Spatie\Crawler\CrawlQueue\CollectionCrawlQueue;
 use Spatie\Crawler\Exception\InvalidCrawlRequestHandler;
+use App\Models\Proxy;
 
 class Crawler
 {
@@ -445,7 +446,17 @@ class Crawler
         $username = $this->proxyConfig['username'];
         $password = $this->proxyConfig['password'];
         $port = $this->proxyConfig['port'];
-        $proxyIp = $ips->random();
+
+        $proxy = Proxy::oldestUsed()->first();
+        $proxyIp = $proxy ? $proxy->ip_address : $ips->random();
+
+        // set the proxy on the observer so we can track success / failures
+        $observers = $this->getCrawlObservers();
+        foreach ($observers as $observer) {
+            if ($proxy) {
+                $observer->setProxy($proxy);
+            }
+        }
 
         return "http://{$username}:{$password}@{$proxyIp}:{$port}";
     }
