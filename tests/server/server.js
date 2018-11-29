@@ -3,7 +3,7 @@
 let app = require('express')();
 
 app.get('/', function (request, response) {
-    response.end('<a href="/txt-disallow">txt disallowed</a><a href="/meta-disallow">meta disallowed</a><a href="/header-disallow">header disallowed</a><a href="/link1">Link1</a><a href="/link2">Link2</a><a href="dir/link4">Link4</a><a href="mailto:test@example.com">Email</a><a href="tel:123">Telephone</a><a href="/nofollow" rel="nofollow">No follow</a>');
+    response.end('<a href="/txt-disallow">txt disallowed</a><a href="/meta-disallow">meta disallowed</a><a href="/header-disallow">header disallowed</a><a href="/link1">Link1</a><p><a href="/link2">Link2</a><a href="dir/link4">Link4</a></p><a href="mailto:test@example.com">Email</a><a href="tel:123">Telephone</a><a href="/nofollow" rel="nofollow">No follow</a>');
 });
 
 app.get('/link1', function (request, response) {
