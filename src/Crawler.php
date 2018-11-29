@@ -91,6 +91,9 @@ class Crawler
     /** @var bool */
     protected $usingProxies = false;
 
+    /** @var string */
+    protected $domFilter = null;
+
     public static function create(array $clientOptions = []): Crawler
     {
         $clientOptions = (count($clientOptions))
@@ -170,6 +173,18 @@ class Crawler
     public function setPoolItemLimit(int $poolItemLimit): Crawler
     {
         $this->poolItemLimit = $poolItemLimit;
+
+        return $this;
+    }
+
+    public function getDomFilter()
+    {
+        return $this->domFilter;
+    }
+
+    public function setDomFilter(string $xpath)
+    {
+        $this->domFilter = $xpath;
 
         return $this;
     }
