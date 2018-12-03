@@ -36,6 +36,25 @@ class CrawlerTest extends TestCase
     }
 
     /** @test */
+    public function it_will_crawl_filtered_dom_links()
+    {
+        Crawler::create()
+            ->setCrawlObserver(new CrawlLogger())
+            ->setDomFilter('p/a')
+            ->startCrawling('http://localhost:8080');
+
+        $this->assertCrawledOnce([
+            ['url' => 'http://localhost:8080/link2', 'foundOn' => 'http://localhost:8080/'],
+            ['url' => 'http://localhost:8080/dir/link4', 'foundOn' => 'http://localhost:8080/'],
+        ]);
+
+        $this->assertNotCrawled([
+            ['url' => 'http://localhost:8080/link1', 'foundOn' => 'http://localhost:8080/'],
+            ['url' => 'http://example.com/', 'foundOn' => 'http://localhost:8080/link1'],
+        ]);
+    }
+
+    /** @test */
     public function it_will_not_crawl_tel_links()
     {
         Crawler::create()

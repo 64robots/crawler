@@ -62,7 +62,9 @@ class LinkAdder
     {
         $domCrawler = new DomCrawler($html, $foundOnUrl);
 
-        return collect($domCrawler->filterXpath('//a')->links())
+        $path = $this->crawler->getDomFilter() ?? 'a';
+        
+        return collect($domCrawler->filterXpath("descendant-or-self::{$path}")->links())
             ->reject(function (Link $link) {
                 return $link->getNode()->getAttribute('rel') === 'nofollow';
             })

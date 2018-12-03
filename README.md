@@ -233,6 +233,30 @@ Crawler::create()
     ->setCrawlQueue(<implementation of \Spatie\Crawler\CrawlQueue\CrawlQueue>)
 ```
 
+## Crawl specific parts of the DOM
+
+When crawling a huge site, the crawler's performance can be improved by filtering the DOM to crawl specific parts of the page. To filter the DOM, you can use the `setDomFilter()` method to specify the xpath of the DOM to crawl.
+
+To crawl only the `a` tags inside the `p` tag.
+
+```html
+<body>
+    <a href="/out">Link Out</a>
+    <p>
+        <a href="/1">Link 1</a>
+        <a href="/2">Link 2</a>
+    </p>
+<body>
+```
+
+```php
+Crawler::create()
+    ->setDomFilter('p/a')
+```
+
+Use this xpath `"div/a[contains(@href, '/dp/')]"` to crawl product links on amazon.
+
+
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
