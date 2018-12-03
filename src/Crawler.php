@@ -183,7 +183,7 @@ class Crawler
         return $this->domFilter;
     }
 
-    public function setDomFilter(string $xpath)
+    public function setDomFilter(string $xpath = null)
     {
         $this->domFilter = $xpath;
 
