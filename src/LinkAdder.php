@@ -62,7 +62,7 @@ class LinkAdder
     {
         $domCrawler = new DomCrawler($html, $foundOnUrl);
 
-        $path = $this->crawler->getDomFilter() ?? 'a';
+        $path = $this->crawler->getDomFilter() ?: 'a';
         
         return collect($domCrawler->filterXpath("descendant-or-self::{$path}")->links())
             ->reject(function (Link $link) {
