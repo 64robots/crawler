@@ -354,10 +354,10 @@ class Crawler
         return $this->baseUrl;
     }
 
-    public function setProxies(array $proxyConfig): Crawler
+    public function setProxies(array $proxyConfig, bool $usingProxies = true): Crawler
     {
         $this->proxyConfig = $proxyConfig;
-        $this->usingProxies = true;
+        $this->usingProxies = $usingProxies;
 
         return $this;
     }
