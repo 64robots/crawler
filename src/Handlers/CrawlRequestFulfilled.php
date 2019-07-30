@@ -29,6 +29,10 @@ class CrawlRequestFulfilled
 
     public function __invoke(ResponseInterface $response, $index)
     {
+        if (config('crawler.logging')) {
+            logger('REQUEST FULLFILLED');
+        }
+
         $robots = new CrawlerRobots($response, $this->crawler->mustRespectRobots());
 
         if (! $robots->mayIndex()) {
@@ -38,6 +42,9 @@ class CrawlRequestFulfilled
         $crawlUrl = $this->crawler->getCrawlQueue()->getUrlById($index);
 
         if ($this->crawler->mayExecuteJavaScript()) {
+            if (config('crawler.logging')) {
+                logger('EXECUTING JAVASCRIPT');
+            }
             $html = $this->getBodyAfterExecutingJavaScript($crawlUrl->url);
 
             $response = $response->withBody(stream_for($html));
@@ -47,6 +54,9 @@ class CrawlRequestFulfilled
 
         if (! $this->crawler->getCrawlProfile() instanceof CrawlSubdomains) {
             if ($crawlUrl->url->getHost() !== $this->crawler->getBaseUrl()->getHost()) {
+                if (config('crawler.logging')) {
+                    logger('SKIPPING: Host Doesnt Match');
+                }
                 return;
             }
         }
@@ -56,6 +66,10 @@ class CrawlRequestFulfilled
         }
 
         $body = $this->convertBodyToString($response->getBody(), $this->crawler->getMaximumResponseSize());
+
+        if (config('crawler.logging')) {
+            logger('ADDING LINKS FROM HTML');
+        }
 
         $this->linkAdder->addFromHtml($body, $crawlUrl->url);
 
