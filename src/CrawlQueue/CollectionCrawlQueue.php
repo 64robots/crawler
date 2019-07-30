@@ -58,7 +58,7 @@ class CollectionCrawlQueue implements CrawlQueue
         return ! $this->contains($this->pendingUrls, $url) && $this->contains($this->urls, $url);
     }
 
-    public function markAsProcessed(CrawlUrl $crawlUrl)
+    public function markAsProcessed(CrawlUrl $crawlUrl, string $reason = null)
     {
         $this->pendingUrls = $this->pendingUrls
             ->reject(function (CrawlUrl $crawlUrlItem) use ($crawlUrl) {
