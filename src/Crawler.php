@@ -333,7 +333,7 @@ class Crawler
         return $this;
     }
 
-    public function setBrowsershot(Browsershot $browsershot)
+    public function setBrowsershot(Browsershot $browsershot = null)
     {
         $this->browsershot = $browsershot;
 
@@ -367,6 +367,9 @@ class Crawler
      */
     public function startCrawling($baseUrl)
     {
+        if (config('crawler.logging')) {
+            logger('CRAWLING INITIATED: ' . $baseUrl);
+        }
         if (! $baseUrl instanceof UriInterface) {
             $baseUrl = new Uri($baseUrl);
         }
@@ -431,7 +434,14 @@ class Crawler
 
     protected function startCrawlingQueue()
     {
+        if (config('crawler.logging')) {
+            logger('STARTED - Crawling Queue');
+        }
+
         while ($this->crawlQueue->hasPendingUrls()) {
+            if (config('crawler.logging')) {
+                logger('QUEUE - Has Pending Urls');
+            }
             $pool = new Pool($this->client, $this->getCrawlRequests(), [
                 'concurrency' => $this->concurrency,
                 'options' => $this->getConfig(),
@@ -497,7 +507,7 @@ class Crawler
 
         while ($crawlUrl = $this->crawlQueue->getFirstPendingUrl()) {
             if (! $this->crawlProfile->shouldCrawl($crawlUrl->url)) {
-                $this->crawlQueue->markAsProcessed($crawlUrl);
+                $this->crawlQueue->markAsProcessed($crawlUrl, 'should-not-crawl');
                 continue;
             }
 
@@ -524,15 +534,24 @@ class Crawler
     public function addToCrawlQueue(CrawlUrl $crawlUrl): Crawler
     {
         if (! $this->getCrawlProfile()->shouldCrawl($crawlUrl->url)) {
+            if (config('crawler.logging')) {
+                logger('Skipping (should not crawl): ' . $crawlUrl->url);
+            }
             return $this;
         }
 
         if ($this->getCrawlQueue()->has($crawlUrl->url)) {
+            if (config('crawler.logging')) {
+                logger('Skipping (already exists): ' . $crawlUrl->url);
+            }
             return $this;
         }
 
         $this->crawledUrlCount++;
 
+        if (config('crawler.logging')) {
+            logger('Adding: ' . $crawlUrl->url);
+        }
         $this->crawlQueue->add($crawlUrl);
 
         return $this;
