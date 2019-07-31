@@ -243,9 +243,9 @@ class Crawler
         return $this->crawlQueue;
     }
 
-    public function executeJavaScript(): Crawler
+    public function executeJavaScript(bool $bool = true): Crawler
     {
-        $this->executeJavaScript = true;
+        $this->executeJavaScript = $bool;
 
         return $this;
     }
