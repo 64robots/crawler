@@ -42,9 +42,6 @@ class LinkAdder
                 return strpos($url->getPath(), '/tel:') === false;
             })
             ->each(function (UriInterface $url) use ($foundOnUrl) {
-                if ($this->crawler->maximumCrawlCountReached()) {
-                    return;
-                }
                 
                 $crawlUrl = CrawlUrl::create($url, $foundOnUrl);
 

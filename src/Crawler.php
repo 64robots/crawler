@@ -40,7 +40,7 @@ class Crawler
     protected $crawlQueue;
 
     /** @var int */
-    protected $crawledUrlCount = 0;
+    protected $crawledUrlCount = 0; // 64R - Updated to crawled count (instead of added url count)
 
     /** @var int|null */
     protected $maximumCrawlCount = null;
@@ -442,6 +442,11 @@ class Crawler
             if (config('crawler.logging')) {
                 logger('QUEUE - Has Pending Urls');
             }
+
+            if ($this->maximumCrawlCountReached()) {
+                break;
+            }
+
             $pool = new Pool($this->client, $this->getCrawlRequests(), [
                 'concurrency' => $this->concurrency,
                 'options' => $this->getConfig(),
@@ -503,7 +508,6 @@ class Crawler
     protected function getCrawlRequests(): Generator
     {
         $poolItemLimit = $this->getPoolItemLimit();
-        $crawledUrlCount = 0;
 
         while ($crawlUrl = $this->crawlQueue->getFirstPendingUrl()) {
             if (! $this->crawlProfile->shouldCrawl($crawlUrl->url)) {
@@ -515,7 +519,11 @@ class Crawler
                 continue;
             }
 
-            if ($poolItemLimit && $poolItemLimit <= $crawledUrlCount) {
+            if ($this->maximumCrawlCountReached()) {
+                break;
+            }
+
+            if ($poolItemLimit && $poolItemLimit <= $this->crawledUrlCount) {
                 break;
             }
 
@@ -523,7 +531,7 @@ class Crawler
                 $crawlObserver->willCrawl($crawlUrl->url);
             }
 
-            $crawledUrlCount++;
+            $this->crawledUrlCount++;
 
             $this->crawlQueue->markAsProcessed($crawlUrl);
 
@@ -546,8 +554,6 @@ class Crawler
             }
             return $this;
         }
-
-        $this->crawledUrlCount++;
 
         if (config('crawler.logging')) {
             logger('Adding: ' . $crawlUrl->url);
