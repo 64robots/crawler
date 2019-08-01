@@ -40,7 +40,7 @@ class Crawler
     protected $crawlQueue;
 
     /** @var int */
-    protected $crawledUrlCount = 0; // 64R - Updated to crawled count (instead of added url count)
+    protected $crawledUrlCount = 0; // 64R - Updated to crawled count (instead of added url count) #927f0e2
 
     /** @var int|null */
     protected $maximumCrawlCount = null;
