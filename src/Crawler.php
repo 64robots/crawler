@@ -512,6 +512,8 @@ class Crawler
     {
         $poolItemLimit = $this->getPoolItemLimit();
 
+        $pooledUrls = 0;
+
         while ($crawlUrl = $this->crawlQueue->getFirstPendingUrl()) {
             if (! $this->crawlProfile->shouldCrawl($crawlUrl->url)) {
                 if (config('crawler.logging')) {
@@ -535,7 +537,7 @@ class Crawler
                 break;
             }
 
-            if ($poolItemLimit && $poolItemLimit <= $this->crawledUrlCount) {
+            if ($poolItemLimit && $poolItemLimit <= $pooledUrls) {
                 if (config('crawler.logging')) {
                     logger('Pool limit reached');
                 }
@@ -547,10 +549,7 @@ class Crawler
             }
 
             $this->crawledUrlCount++;
-
-            if (config('crawler.logging')) {
-                logger('Marking as processed');
-            }
+            $pooledUrls++;
 
             $this->crawlQueue->markAsProcessed($crawlUrl);
 
