@@ -441,6 +441,7 @@ class Crawler
         while ($this->crawlQueue->hasPendingUrls()) {
             if (config('crawler.logging')) {
                 logger('QUEUE - Has Pending Urls');
+                logger('testing');
             }
 
             if ($this->maximumCrawlCountReached()) {
