@@ -441,7 +441,6 @@ class Crawler
         while ($this->crawlQueue->hasPendingUrls()) {
             if (config('crawler.logging')) {
                 logger('QUEUE - Has Pending Urls');
-                logger('testing');
             }
 
             if ($this->maximumCrawlCountReached()) {
@@ -515,11 +514,17 @@ class Crawler
 
         while ($crawlUrl = $this->crawlQueue->getFirstPendingUrl()) {
             if (! $this->crawlProfile->shouldCrawl($crawlUrl->url)) {
+                if (config('crawler.logging')) {
+                    logger('Should not crawl');
+                }
                 $this->crawlQueue->markAsProcessed($crawlUrl, 'should-not-crawl');
                 continue;
             }
 
             if ($this->crawlQueue->hasAlreadyBeenProcessed($crawlUrl)) {
+                if (config('crawler.logging')) {
+                    logger('Already processed');
+                }
                 continue;
             }
 
@@ -531,6 +536,9 @@ class Crawler
             }
 
             if ($poolItemLimit && $poolItemLimit <= $this->crawledUrlCount) {
+                if (config('crawler.logging')) {
+                    logger('Pool limit reached');
+                }
                 break;
             }
 
@@ -539,6 +547,10 @@ class Crawler
             }
 
             $this->crawledUrlCount++;
+
+            if (config('crawler.logging')) {
+                logger('Marking as processed');
+            }
 
             $this->crawlQueue->markAsProcessed($crawlUrl);
 
