@@ -444,6 +444,9 @@ class Crawler
             }
 
             if ($this->maximumCrawlCountReached()) {
+                if (config('crawler.logging')) {
+                    logger('MAX CRAWLS REACHED');
+                }
                 break;
             }
 
@@ -520,6 +523,9 @@ class Crawler
             }
 
             if ($this->maximumCrawlCountReached()) {
+                if (config('crawler.logging')) {
+                    logger('Hit Crawl Limit');
+                }
                 break;
             }
 
